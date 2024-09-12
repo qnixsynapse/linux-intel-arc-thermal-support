@@ -1,5 +1,3 @@
-# Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
-
 pkgbase=linux-intel
 pkgver=6.10.9.arch1
 pkgrel=3
