@@ -1,7 +1,5 @@
-# Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
-
 pkgbase=linux-intel
-pkgver=6.10.10.arch1
+pkgver=6.11.2.arch1
 pkgrel=1
 pkgdesc='Linux'
 url='https://github.com/archlinux/linux'
@@ -19,11 +17,11 @@ makedepends=(
   xz
 
   # htmldocs
-  graphviz
-  imagemagick
-  python-sphinx
-  python-yaml
-  texlive-latexextra
+  #graphviz
+  #imagemagick
+  #python-sphinx
+  #python-yaml
+  #texlive-latexextra
 )
 options=(
   !debug
@@ -33,29 +31,22 @@ _srcname=linux-${pkgver%.*}
 _srctag=v${pkgver%.*}-${pkgver##*.}
 source=(
   https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/${_srcname}.tar.{xz,sign}
-  $url/releases/download/$_srctag/linux-$_srctag.patch.zst{,.sig}
   config  # the main kernel config file
-  Intel_GPU_patches/{temp1.patch,temp2.patch} # patches for Intel GPU
+  temp1.patch
+  temp2.patch # patches for Intel GPU
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
   647F28654894E3BD457199BE38DBBDC86092693E  # Greg Kroah-Hartman
-  83BC8889351B5DEBBB68416EB8AC08600F108CDF  # Jan Alexander Steffens (heftig)
 )
-# https://www.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
-sha256sums=('e687e735b5eb9efb6d67b42433c93fc9118106a995514f062652873b5e809bcd'
-            'SKIP'
-            '064b9841dd6738e8a6f8859743c66e0d603541b6afa021ab98ea7e3623fca108'
+# https://mirrors.edge.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
+sha256sums=('ec9ef7a0b9cebb55940e1ef87a1f9e1004b10456a119dc386bb3e565b0d39c42'
             'SKIP'
             'SKIP'
             'SKIP'
-            'SKIP')
-b2sums=('8a15910089d080886046b1fd8d57ef28ce872bf428e67ccbc9d5ca92da794d6dee7ab83cc914a499b40962e2990c3b1e5b11ae7d12c1eff7bec548c9a67df03a'
-        'SKIP'        '06b8f21c167f3376a62f9bd0d3e0275a4ba32736aaa5d7fb94a07e99445186ab8f9426468d33c00fd43c52c52ffdb3ee77e6802db0781ffad6b8d74cdc4951a1'
-        'SKIP'
-        'SKIP'
-        'SKIP'
-        'SKIP')
+            'SKIP'
+            )
+
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -90,7 +81,7 @@ build() {
   cd $_srcname
   CPUCOUNT=$(grep -c   "^processor" /proc/cpuinfo)
   echo "This machine has ${CPUCOUNT} cpus, will use make -j${CPUCOUNT} where possible"
-  make -j${CPUCOUNT} all
+  make V=1 -j${CPUCOUNT} all
   make -C tools/bpf/bpftool vmlinux.h feature-clang-bpf-co-re=1
 }
 
